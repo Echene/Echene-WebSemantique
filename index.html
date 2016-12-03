@@ -23,14 +23,11 @@
         </li>
         <li>
             <label for="prenom">Prénom :</label>
-            <input type="text" name="prenom" id="prenom" required="true" placeholder="Entrez votre prénom"/>
-            <!-- ajouter à input l'attribut qui donne une indication grisée (placeholder) -->
+            <input type="text" name="prenom" id="prenom" required placeholder="Entrez votre prénom"/>
         </li>
         <li>
             <label for="mdp1">Mot de passe :</label>
-            <input type="password" name="password" id="mdp1" pattern="regex" onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
-            <!-- ajouter à input l'attribut qui dit que c'est un champs obligatoire -->
-            <!-- ajouter à input l'attribut qui donne une indication grisée (placeholder) -->
+            <input type="password" name="password" id="mdp1" pattern="/w{6,9}" placeholder="Entrez votre mot de passe" required onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
             <!-- spécifiez l'expression régulière: le mot de passe doit être composé de 6 à 8 caractères alphanumériques -->
             <!-- quels sont les deux scénarios où l'attribut title sera affiché ? -->
             <!-- encore une fois, quelle est la différence entre name et id pour un input ? -->
@@ -38,17 +35,16 @@
         </li>
         <li>
             <label for="mdp2">Confirmez mot de passe :</label>
-            <input type="password" id="mdp2" required onkeyup="validateMdp2()">
-            <!-- ajouter à input l'attribut qui dit que c'est un champs obligatoire -->
-            <!-- ajouter à input l'attribut qui donne une indication grisée (placeholder) -->
+            <input type="password" id="mdp2" required placeholder="Confirmer votre mot de passe" onkeyup="validateMdp2()">
             <!-- pourquoi est-ce qu'on a pas mis un attribut name ici ? -->
             <!-- quel scénario justifie qu'on ait ajouté l'écouter validateMdp2() à l'évènement onkeyup de l'input mdp1 ? -->
             <span class="form_hint">Les mots de passes doivent être égaux.</span>
             <script>
                 validateMdp2 = function(e) {
-                    var mdp1 = document.getElementById('mdp1');
-                    var mdp2 = document.getElementById('mdp2');
-                    if (/* est-ce que mdp1 est valide ? */ && /* est-ce que mdp1 et mdp2 ont la même valeur ? */) {
+                    var mdp1 = document.getElementById('mdp1').value;
+                    var mdp2 = document.getElementById('mdp2').value;
+
+                    if (mdp1 != "" && mdp1 == mdp2) {
                         // ici on supprime le message d'erreur personnalisé, et du coup mdp2 devient valide.
                         document.getElementById('mdp2').setCustomValidity('');
                     } else {
@@ -72,8 +68,9 @@
                         console.log(new Date(0).getYear());
                         console.log(new Date(65572346585).getYear());
                         // modifier ici la valeur de l'élément age
+                        document.getElementById('age').value =  new Date().getYear() - document.getElementById("birthdate").valueAsDate.getYear();
                     } catch(e) {
-                        // supprimez ici la valeur de l'élément age
+                        document.getElementById('age').value = "";
                     }
                 }
             </script>
@@ -83,6 +80,7 @@
             <label for="age">Age:</label>
             <input type="number" name="age" id="age" disabled/>
             <!-- à quoi sert l'attribut disabled ? -->
+            <!-- Cette attribut permet de désactiver un champ, le rendant non modifiable par l'utilisateur -->
         </li>
 
         <li>
@@ -104,7 +102,11 @@
                     var canvas = document.getElementById("preview");
                     var ctx = canvas.getContext("2d");
                     // on réinitialise le canvas: on l'efface, et déclare sa largeur et hauteur à 0
-                    ctx.setFillColor("white");
+
+
+                    //ctx.setFillColor("white");
+
+
                     ctx.fillRect(0,0,canvas.width,canvas.height);
                     canvas.width=0;
                     canvas.height=0;
@@ -138,8 +140,10 @@
                             // Vous devez supprimer ces lignes, et modifier width et height pour:
                             //    - garder les proportions,
                             //    - et que le maximum de width et height soit égal à 96
-                            var width = MAX_WIDTH;
-                            var height = MAX_HEIGHT;
+                            var ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+
+                            var width = width*ratio;
+                            var height = height*ratio;
 
                             canvas.width = width;
                             canvas.height = height;
