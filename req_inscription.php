@@ -1,7 +1,7 @@
 <?php  
   
-// récupérer les éléments du formulaire  
-// et se protéger contre l'injection MySQL (plus de détails ici: http://us.php.net/mysql_real_escape_string)  
+// rï¿½cupï¿½rer les ï¿½lï¿½ments du formulaire  
+// et se protï¿½ger contre l'injection MySQL (plus de dï¿½tails ici: http://us.php.net/mysql_real_escape_string)  
 $email=stripslashes($_POST['email']);  
 $password=stripslashes($_POST['password']);  
 $nom=stripslashes($_POST['nom']);  
@@ -22,21 +22,21 @@ try {
     // Connect to server and select database.  
     $dbh = new PDO('mysql:host=localhost;dbname=pictionnary', 'test', 'test');  
   
-    // Vérifier si un utilisateur avec cette adresse email existe dans la table.  
-    // En SQL: sélectionner tous les tuples de la table USERS tels que l'email est égal à $email.  
-    $sql = $dbh->query("la requète SQL ici");  
-    if (est-ce que le nombre de réponses est supérieur ou égal à 1 ?) {  
-        // rediriger l'utilisateur ici, avec tous les paramètres du formulaire plus le message d'erreur  
-        // utiliser à bon escient la méthode htmlspecialchars http://www.php.net/manual/fr/function.htmlspecialchars.php          // et/ou la méthode urlencode http://php.net/manual/fr/function.urlencode.php  
+    // VÃ©rifier si un utilisateur avec cette adresse email existe dans la table.
+    // En SQL: sÃ©lectionner tous les tuples de la table USERS tels que l'email est ï¿½gal ï¿½ $email.
+    $sql = $dbh->query("SELECT u.email FROM users WHERE u.email = " . $email . ";");
+    if ($sql >= 1) {
+        // rediriger l'utilisateur ici, avec tous les paramÃ¨tres du formulaire plus le message d'erreur
+        // utiliser Ã  bon escient la mÃ©thode htmlspecialchars http://www.php.net/manual/fr/function.htmlspecialchars.php          // et/ou la mÃ©thode urlencode http://php.net/manual/fr/function.urlencode.php
     }  
     else {  
         // Tenter d'inscrire l'utilisateur dans la base  
         $sql = $dbh->prepare("INSERT INTO users (email, password, nom, prenom, tel, website, sexe, birthdate, ville, taille, couleur, profilepic) "  
                 . "VALUES (:email, :password, :nom, :prenom, :tel, :website, :sexe, :birthdate, :ville, :taille, :couleur, :profilepic)");  
         $sql->bindValue(":email", $email, PDO::PARAM_STR);
-        // de même, lier la valeur pour le mot de passe
+        // de mÃªme, lier la valeur pour le mot de passe
         $sql->bindValue(":password", $password, PDO::PARAM_STR);
-        // lier la valeur pour le nom, attention le nom peut être nul, il faut alors lier avec NULL, ou DEFAULT
+        // lier la valeur pour le nom, attention le nom peut Ãªtre nul, il faut alors lier avec NULL, ou DEFAULT
         $sql->bindValue(":nom", $nom, PDO::PARAM_STR);
         // idem pour le prenom, tel, website, birthdate, ville, taille, profilepic
         // n.b., notez: birthdate est au bon format ici, ce serait pas le cas pour un SGBD Oracle par exemple
@@ -47,28 +47,29 @@ try {
         $sql->bindValue(":ville", $ville, PDO::PARAM_STR);
         $sql->bindValue(":taille", $taille, PDO::PARAM_INT);
         $sql->bindValue(":profilepic", $profilepic, PDO::PARAM_LOB);
-        // idem pour la couleur, attention au format ici (7 caractères, 6 caractères attendus seulement)
+        // idem pour la couleur, attention au format ici (7 caractÃ¨res, 6 caractÃ¨res attendus seulement)
         // idem pour le prenom, tel, website
         $sql->bindValue(":couleur", $couleur, PDO::PARAM_STR);
-        // idem pour le sexe, attention il faut être sûr que c'est bien 'H', 'F', ou ''
+        // idem pour le sexe, attention il faut Ãªtre sÃ»r que c'est bien 'H', 'F', ou ''
         $sql->bindValue(":sexe", $sexe, PDO::PARAM_STR);
-        // on tente d'exécuter la requête SQL, si la méthode renvoie faux alors une erreur a été rencontrée.  
+        // on tente d'exÃ©cuter la requÃªte SQL, si la mÃ©thode renvoie faux alors une erreur a Ã©tÃ© rencontrÃ©e.
         if (!$sql->execute()) {  
             echo "PDO::errorInfo():<br/>";  
             $err = $sql->errorInfo();  
             print_r($err);  
         } else {  
   
-            // ici démarrer une session  
+            // ici dÃ©marrer une session
 			session_start();
-            // ensuite on requête à nouveau la base pour l'utilisateur qui vient d'être inscrit, et   
+			
+            // ensuite on requÃªte Ã  nouveau la base pour l'utilisateur qui vient d'Ãªtre inscrit, et
             $sql = $dbh->query("SELECT u.id, u.email, u.nom, u.prenom, u.couleur, u.profilepic FROM USERS u WHERE u.email='".$email."'");  
             if ($sql->rowCount()<1) {  
-                header("Location: main.php?erreur=".urlencode("un problème est survenu"));  
+                header("Location: main.php?erreur=".urlencode("un problÃ¨me est survenu"));
             }  
             else {  
-                // on récupère la ligne qui nous intéresse avec $sql->fetch(),   
-                // et on enregistre les données dans la session avec $_SESSION["..."]=...  
+                // on rÃ©cupÃ©re la ligne qui nous intÃ©resse avec $sql->fetch(),
+                // et on enregistre les donnÃ©es dans la session avec $_SESSION["..."]=...
 				
 				$result = $sql->fetch(PDO::FETCH_ASSOC);
                 $_SESSION["email"] = $result["email"];
@@ -85,7 +86,8 @@ try {
                 $_SESSION["profilepic"] = $result["profilepic"];
             }  
   
-            // ici,  rediriger vers la page main.php  
+            // ici,  rediriger vers la page main.php
+			header('Location: main.php');
         }  
         $dbh = null;  
     }  
@@ -94,4 +96,3 @@ try {
     $dbh = null;  
     die();  
 }  
-?>  

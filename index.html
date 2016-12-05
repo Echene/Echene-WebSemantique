@@ -16,10 +16,14 @@
         </li>
         <li>
             <label for="email">E-mail :</label>
-            <input type="email" name="email" id="email" autofocus="true" required="true"  placeholder="Entrez votre nom"/>
+            <input type="email" name="email" id="email" autofocus="true" required="true"  placeholder="Entrez votre email"/>
             <!-- quelle est la différence entre les attributs name et id ? -->
             <!-- c'est lequel qui doit être égal à l'attribut for du label ? -->
             <span class="form_hint">Format attendu "name@something.com"</span>
+        </li>
+        <li>
+            <label for="nom">Nom :</label>
+            <input type="text" name="nom" id="nom" required placeholder="Entrez votre nom"/>
         </li>
         <li>
             <label for="prenom">Prénom :</label>
@@ -27,7 +31,7 @@
         </li>
         <li>
             <label for="mdp1">Mot de passe :</label>
-            <input type="password" name="password" id="mdp1" pattern="/w{6,9}" placeholder="Entrez votre mot de passe" required onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
+            <input type="password" name="password" id="mdp1" pattern=".{6,9}" placeholder="Entrez votre mot de passe" required onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
             <!-- spécifiez l'expression régulière: le mot de passe doit être composé de 6 à 8 caractères alphanumériques -->
             <!-- quels sont les deux scénarios où l'attribut title sera affiché ? -->
             <!-- encore une fois, quelle est la différence entre name et id pour un input ? -->
@@ -53,7 +57,14 @@
                     }
                 }
             </script>
-
+        <li>
+            <label for="tel">Téléphone :</label>
+            <input type="tel" name="tel" id="tel" required placeholder="Entrez votre téléphone"/>
+        </li>
+        <li>
+            <label for="ville">Ville :</label>
+            <input type="text" name="ville" id="ville" required placeholder="Entrez votre prénom"/>
+        </li>
         <li>
             <label for="birthdate">Date de naissance:</label>
             <input type="date" name="birthdate" id="birthdate" placeholder="JJ/MM/AAAA" required onchange="computeAge()"/>
@@ -82,7 +93,18 @@
             <!-- à quoi sert l'attribut disabled ? -->
             <!-- Cette attribut permet de désactiver un champ, le rendant non modifiable par l'utilisateur -->
         </li>
-
+        <li>
+            <label for="taille">Taille :</label>
+            <input type="range" name="taille" id="taille" value="1" min="0" max="2.50" step="0.01">
+        </li>
+        <li>
+            <label for="couleur">Couleur :</label>
+            <input type="color" name="couleur" id="couleur" value="#rrggbb">
+        </li>
+        <li>
+            <label for="website">Website :</label>
+            <input type="url" name="website" id="website" required placeholder="Entrez votre site web"/>
+        </li>
         <li>
             <label for="profilepicfile">Photo de profil:</label>
             <input type="file" id="profilepicfile" onchange="loadProfilePic(this)"/>
