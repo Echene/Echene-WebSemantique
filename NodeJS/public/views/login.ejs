@@ -1,0 +1,19 @@
+<% var title = 'Pictionnary - Connexion' %>
+<% include head %>
+
+<h1>Connexion</h1>
+<form method="post" action="/login">
+  <li>
+    <label>Email:</label>
+    <input type="email" id="email" name="email" required value="emma.chene@gmail.com">
+  </li>
+  <li>
+    <label>Mot de passe:</label>
+    <input type="password"  id="password" name="password" required value="abc123">
+  </li>
+  <li>
+    <input type="submit" value="Login">
+  </li>
+</form>
+
+<% include foot %>

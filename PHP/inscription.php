@@ -3,23 +3,27 @@
 <head>
     <meta charset=utf-8 />
     <title>Pictionnary - Inscription</title>
-    <link rel="stylesheet" media="screen" href="css/styles.css" >
+	<link rel="stylesheet" media="screen" href="css/styles.css" >
 </head>
 <body>
 
 <h2>Inscrivez-vous</h2>
 <form class="inscription" action="req_inscription.php" method="post" name="inscription">
-    <!-- c'est quoi les attributs action et method ? -->
-    <!-- qu'y a-t-il d'autre comme possiblité que post pour l'attribut method ? -->
+    <!-- c'est quoi les attributs action et method ? action renvoie à la page qui va traiter les données envoyées et method donne la façon d'envoyer les données-->
+    <!-- qu'y a-t-il d'autre comme possiblité que post pour l'attribut method ? GET-->
     <span class="required_notification">Les champs obligatoires sont indiqués par *</span>
     <ul>
         </li>
         <li>
             <label for="email">E-mail :</label>
-            <input type="email" name="email" id="email" autofocus="true" required="true"  placeholder="Entrez votre nom"/>
+            <input type="email" name="email" id="email" autofocus="true" required="true"  placeholder="Entrez votre email"/>
             <!-- quelle est la différence entre les attributs name et id ? -->
             <!-- c'est lequel qui doit être égal à l'attribut for du label ? -->
             <span class="form_hint">Format attendu "name@something.com"</span>
+        </li>
+        <li>
+            <label for="nom">Nom :</label>
+            <input type="text" name="nom" id="nom" required placeholder="Entrez votre nom"/>
         </li>
         <li>
             <label for="prenom">Prénom :</label>
@@ -27,17 +31,17 @@
         </li>
         <li>
             <label for="mdp1">Mot de passe :</label>
-            <input type="password" name="password" id="mdp1" pattern="/w{6,9}" placeholder="Entrez votre mot de passe" required onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
+            <input type="password" name="password" id="mdp1" pattern=".{6,9}" placeholder="Entrez votre mot de passe" required onkeyup="validateMdp2()" title = "Le mot de passe doit contenir de 6 à 8 caractères alphanumériques.">
             <!-- spécifiez l'expression régulière: le mot de passe doit être composé de 6 à 8 caractères alphanumériques -->
             <!-- quels sont les deux scénarios où l'attribut title sera affiché ? -->
-            <!-- encore une fois, quelle est la différence entre name et id pour un input ? -->
+            <!-- encore une fois, quelle est la différence entre name et id pour un input ? name pour le php et id pour css/html/js -->
             <span class="form_hint">De 6 à 8 caractères alphanumériques.</span>
         </li>
         <li>
             <label for="mdp2">Confirmez mot de passe :</label>
             <input type="password" id="mdp2" required placeholder="Confirmer votre mot de passe" onkeyup="validateMdp2()">
             <!-- pourquoi est-ce qu'on a pas mis un attribut name ici ? -->
-            <!-- quel scénario justifie qu'on ait ajouté l'écouter validateMdp2() à l'évènement onkeyup de l'input mdp1 ? -->
+            <!-- quel scénario justifie qu'on ait ajouté l'écouter validateMdp2() à l'évènement onkeyup de l'input mdp1 ? Si on change le mpd1 quand on se trompe sur celui-ci-->
             <span class="form_hint">Les mots de passes doivent être égaux.</span>
             <script>
                 validateMdp2 = function(e) {
@@ -53,7 +57,14 @@
                     }
                 }
             </script>
-
+        <li>
+            <label for="tel">Téléphone :</label>
+            <input type="tel" name="tel" id="tel" required placeholder="Entrez votre téléphone"/>
+        </li>
+        <li>
+            <label for="ville">Ville :</label>
+            <input type="text" name="ville" id="ville" required placeholder="Entrez votre prénom"/>
+        </li>
         <li>
             <label for="birthdate">Date de naissance:</label>
             <input type="date" name="birthdate" id="birthdate" placeholder="JJ/MM/AAAA" required onchange="computeAge()"/>
@@ -82,7 +93,24 @@
             <!-- à quoi sert l'attribut disabled ? -->
             <!-- Cette attribut permet de désactiver un champ, le rendant non modifiable par l'utilisateur -->
         </li>
-
+		<div class="form-group">
+			<label for="sexe">Sexe :</label>
+			<div>  
+				<label> Homme : </label><input value="H" type="radio" name="sexe"/><label> Femme : </label><input value="F" type="radio" name="sexe"/>
+			</div>
+		</div>
+        <li>
+            <label for="taille">Taille :</label>
+            <input type="range" name="taille" id="taille" value="1" min="0" max="2.50" step="0.01">
+        </li>
+        <li>
+            <label for="couleur">Couleur :</label>
+            <input type="color" name="couleur" id="couleur" value="#rrggbb">
+        </li>
+        <li>
+            <label for="website">Website :</label>
+            <input type="url" name="website" id="website" required placeholder="Entrez votre site web"/>
+        </li>
         <li>
             <label for="profilepicfile">Photo de profil:</label>
             <input type="file" id="profilepicfile" onchange="loadProfilePic(this)"/>

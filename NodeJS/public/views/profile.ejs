@@ -1,0 +1,41 @@
+<% var title = 'Pictionnary - Profile' %>
+<% include head %>
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h1><span class="color:<%= color %>"><%= prenom %> <%= nom %></span></h1>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="/avatars/Avatar.png" alt="Avatar <%= prenom %> <%= nom %>" class="img-thumbnail" width="300" />
+                        
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="profil">
+                            <li><b>Date de naissance :</b> <%= birthdate %></li>
+                            <li><b>Numéro de téléphone :</b> <%= tel %></li>
+                            <li><b>Site web :</b> <%= website %></li>
+                            <li><b>Sexe :</b> <%= sexe %></li>
+                            <li><b>Couleur favorite : </b> <%= color %></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+			<div class="container">
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/paint">Dessiner</a></li>
+						<li><a href="/guess">Deviner</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/logout">Déconnexion</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include foot %>

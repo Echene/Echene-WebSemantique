@@ -1,0 +1,119 @@
+<% include head.ejs %>
+<% var title = 'Pictionnary - Modification profil' %>
+<html>
+<head>
+
+	<link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" media="screen" href="css/styles.css" >
+</head>
+<body>
+<form class="inscription" method="post" name="inscription">
+    <ul>
+        <li>
+            <label for="nom">Nom :</label>
+            <input type="text" name="nom" id="nom" required value = '<%= nom %>'/>
+        </li>
+        <li>
+            <label for="prenom">Prénom :</label>
+            <input type="text" name="prenom" id="prenom" required value = '<%= prenom %>'/>
+        </li>
+        <li>
+            <label for="tel">Téléphone :</label>
+            <input type="tel" name="tel" id="tel" required value = '<%= tel %>'/>
+        </li>
+        <li>
+            <label for="ville">Ville :</label>
+            <input type="text" name="ville" id="ville" required value = '<%= ville %>'/>
+        </li>
+        <li>
+            <label for="birthdate">Date de naissance:</label>
+            <input type="date" name="birthdate" id="birthdate" placeholder="JJ/MM/AAAA" required onchange="computeAge()" value='<%= birthdate %>'/>
+            <span class="form_hint">Format attendu "JJ/MM/AAAA"</span>
+        </li>
+        <li>
+            <label for="taille">Taille :</label>
+            <input type="range" name="taille" id="taille" value="1" min="0" max="2.50" step="0.01">
+        </li>
+        <li>
+            <label for="couleur">Couleur :</label>
+            <input type="color" name="couleur" id="couleur" value = '<%= color %>'">
+        </li>
+        <li>
+            <label for="website">Website :</label>
+            <input type="url" name="website" id="website" required value = '<%= website %>'/>
+        </li>
+        <li>
+            <label for="profilepicfile">Photo de profil:</label>
+            <input type="file" id="profilepicfile" onchange="loadProfilePic(this)"/>
+            <span class="form_hint">Choisissez une image.</span>
+            <input type="hidden" name="profilepic" id="profilepic"/>
+
+            <canvas id="preview" width="0" height="0"></canvas>
+
+            <script>
+                loadProfilePic = function (e) {
+                    // on récupère le canvas où on affichera l'image
+                    var canvas = document.getElementById("preview");
+                    var ctx = canvas.getContext("2d");
+                    // on réinitialise le canvas: on l'efface, et déclare sa largeur et hauteur à 0
+
+
+                    //ctx.setFillColor("white");
+
+
+                    ctx.fillRect(0,0,canvas.width,canvas.height);
+                    canvas.width=0;
+                    canvas.height=0;
+                    // on récupérer le fichier: le premier (et seul dans ce cas là) de la liste
+                    var file = document.getElementById("profilepicfile").files[0];
+                    // l'élément img va servir à stocker l'image temporairement
+                    var img = document.createElement("img");
+                    // l'objet de type FileReader nous permet de lire les données du fichier.
+                    var reader = new FileReader();
+                    // on prépare la fonction callback qui sera appelée lorsque l'image sera chargée
+                    reader.onload = function(e) {
+                        //on vérifie qu'on a bien téléchargé une image, grâce au mime type
+                        if (!file.type.match(/image.*/)) {
+                            // le fichier choisi n'est pas une image: le champs profilepicfile est invalide, et on supprime sa valeur
+                            document.getElementById("profilepicfile").setCustomValidity("Il faut télécharger une image.");
+                            document.getElementById("profilepicfile").value = "";
+                        }
+                        else {
+
+                            img.src = e.target.result;
+                            // le champs profilepicfile est valide
+                            document.getElementById("profilepicfile").setCustomValidity("");
+                            var MAX_WIDTH = 96;
+                            var MAX_HEIGHT = 96;
+                            var width = img.width;
+                            var height = img.height;
+
+                            var ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+
+                            var width = width*ratio;
+                            var height = height*ratio;
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            // on dessine l'image dans le canvas à la position 0,0 (en haut à gauche)
+                            // et avec une largeur de width et une hauteur de height
+                            ctx.drawImage(img, 0, 0, width, height);
+                            // on exporte le contenu du canvas (l'image redimensionnée) sous la forme d'une data url
+                            var dataurl = canvas.toDataURL("image/png");
+                            // on donne finalement cette dataurl comme valeur au champs profilepic
+                            document.getElementById("profilepic").value = dataurl;
+                        };
+                    }
+                    // on charge l'image pour de vrai, lorsque ce sera terminé le callback loadProfilePic sera appelé.
+                    reader.readAsDataURL(file);
+                }
+            </script>
+        </li>
+
+        <li>
+            <input type="submit" value="Modifier">
+        </li>
+    </ul>
+</form>
+
+<% include foot.ejs %>

@@ -1,0 +1,83 @@
+<% var title = 'Pictionnary - Guess' %>
+<% include head %>
+    <script>  
+
+        var size, color;  
+
+        var x0, y0;  
+
+        var drawingCommands = <%- commandes %>;  
+  
+        window.onload = function() 
+		{  
+            var canvas = document.getElementById('myCanvas');  
+            canvas.width = 400;  
+            canvas.height= 400;  
+            var context = canvas.getContext('2d');  
+  
+            var start = function(c) 
+			{  
+				size =  c.size;
+				color = c.color;
+				y0 = c.y;
+				x0 = c.x;
+				context.beginPath();
+				context.fillStyle = color;
+				context.arc(x0, y0, size / 2, 0, 2 * Math.PI);
+				context.fill();
+				context.closePath();
+            }  
+  
+            var draw = function(c) 
+			{  
+				y0 = c.y;
+				x0 = c.x;
+				context.beginPath();
+				context.fillStyle = color;
+				context.arc(x0, y0, size /2, 0, 2 * Math.PI);
+				context.fill();
+				context.closePath();		
+            }  
+  
+            var clear = function() 
+			{  
+				context.clearRect(0, 0, canvas.width, canvas.height);
+            }  
+  
+            var i = 0;  
+            var iterate = function() 
+			{  
+                if(i>=drawingCommands.length)  
+				{
+                    return;  
+				}
+                var c = drawingCommands[i];  
+                switch(c.command) 
+				{  
+                    case "start":  
+                        start(c);  
+                        break;  
+                    case "draw":  
+                        draw(c);  
+                        break;  
+                    case "clear":  
+                        clear();  
+                        break;  
+                    default:  
+                        console.error(c.command);  
+                }  
+                i++;  
+                setTimeout(iterate,30);  
+            };  
+  
+            iterate();  
+        };   
+    </script>  
+</head>  
+
+
+    <canvas id="myCanvas"></canvas>
+    <a href="/">Retour</a>
+
+ 
+<% include foot %>

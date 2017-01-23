@@ -1,0 +1,134 @@
+<% var title = 'Pictionnary - Dessiner' %>
+<% include head %>
+    <script>  
+  
+
+        var sizes=[8,20,44,90];  
+
+        var size, color;  
+
+        var x0, y0;  
+
+        var drawingCommands = [];  
+  
+        var setColor = function() 
+		{  
+            color = document.getElementById('couleur').value;  
+        }  
+  
+        var setSize = function() 
+		{  
+			size =  sizes[document.getElementById('taille').value];
+        }  
+  
+        window.onload = function() 
+		{  
+            var canvas = document.getElementById('myCanvas');  
+            canvas.width = 400;  
+            canvas.height= 400;  
+            var context = canvas.getContext('2d');  
+  
+            setSize();  
+            setColor();  
+            document.getElementById('taille').onchange = setSize;  
+            document.getElementById('couleur').onchange = setColor;  
+  
+            var isDrawing = false;  
+  
+            var startDrawing = function(e) 
+			{   
+                var command = {};  
+                command.command="start";
+				command.x=e.layerX;
+				command.y=e.layerY;
+				command.size = size/2;
+				command.color = color;
+
+  
+                // on l'ajoute à la liste des commandes  
+                drawingCommands.push(command);  
+  
+                // ici, dessinez un cercle de la bonne couleur, de la bonne taille, et au bon endroit. 
+				context.beginPath();
+				context.fillStyle = color;
+				context.arc(e.layerX, e.layerY, size / 2, 0, 2 * Math.PI);
+				context.fill();
+				context.closePath();
+  
+                isDrawing = true;  
+            }  
+  
+            var stopDrawing = function(e) 
+			{  
+                isDrawing = false;  
+            }  
+  
+            var draw = function(e) 
+			{  
+                if(isDrawing) 
+				{  
+                    // ici, créer un nouvel objet qui représente une commande de type "draw", avec la position, et l'ajouter à la liste des commandes.
+					var command = {};
+					command.command="draw";
+					command.x=e.layerX;
+					command.y=e.layerY;
+					drawingCommands.push(command);
+					
+                    // ici, dessinez un cercle de la bonne couleur, de la bonne taille, et au bon endroit.   
+					context.beginPath();
+					context.fillStyle = color;
+					context.arc(e.layerX, e.layerY, size / 2, 0, 2 * Math.PI);
+					context.fill();
+					context.closePath();
+					
+                }  
+            }  
+  
+			// Lors d'un clique;
+            canvas.onmousedown = startDrawing
+			
+			// Lorsque que la souris sors du cadre
+            canvas.onmouseout = stopDrawing;  
+			
+			// Lorsque le clique s'arrête
+            canvas.onmouseup = stopDrawing;  
+			
+			//Lors d'un mouvement de souris
+            canvas.onmousemove = draw;  
+  
+            document.getElementById('restart').onclick = function()
+			{  
+				var command = {};
+				command.command="clear";
+				drawingCommands.push(command);
+
+				context.clearRect(0, 0, canvas.width, canvas.height);
+            };  
+  
+            document.getElementById('validate').onclick = function() 
+			{  
+                // la prochaine ligne transforme la liste de commandes en une chaîne de caractères, et l'ajoute en valeur au champs "drawingCommands" pour l'envoyer au serveur.  
+                document.getElementById('drawingCommands').value = JSON.stringify(drawingCommands);  
+  
+                // ici, exportez le contenu du canvas dans un data url, et ajoutez le en valeur au champs "picture" pour l'envoyer au serveur.
+				document.getElementById('picture').value = canvas.toDataURL();				
+            };  
+        };  
+    </script>  
+</head>  
+<body>
+<canvas id="myCanvas"></canvas>  
+
+<form name="tools" action="/paint" method="post">  
+
+	<input type="range" id="taille" min="0" max="3" step="1" value="0" width:100px/>
+	<input type="color" id="couleur"/>
+  
+    <input id="restart" type="button" value="Effacer"/>  
+    <input type="hidden" id="drawingCommands" name="drawingCommands"/>  
+
+    <input type="hidden" id="picture" name="picture"/>  
+    <input id="validate" type="submit" value="Valider"/>  
+</form>  
+ 
+<% include foot %>
