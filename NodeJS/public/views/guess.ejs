@@ -1,4 +1,4 @@
-<% var title = 'Pictionnary - Guess' %>
+<% var title = 'Pictionnary - Deviner' %>
 <% include head %>
     <script>  
 
@@ -7,6 +7,7 @@
         var x0, y0;  
 
         var drawingCommands = <%- commandes %>;  
+		var reponse = "<%- reponse %>";  
   
         window.onload = function() 
 		{  
@@ -67,17 +68,37 @@
                         console.error(c.command);  
                 }  
                 i++;  
-                setTimeout(iterate,30);  
+                setTimeout(iterate,10);  
             };  
   
             iterate();  
         };   
+		
+		function verify() {
+		
+			if(reponse == document.getElementById("reponse").value) {
+				alert("Bravo!");
+			} else {
+				document.getElementById("reponse").value = "";
+			}
+		}
+		
+		
     </script>  
 </head>  
 
+<div style="width: 400px">
+    <canvas style="border:2px solid #000000;" id="myCanvas"></canvas>
+	<div style="margin: 1em;max-width: 500px;" class="panel panel-default">
+    <div class="panel-heading">Votre réponse</div>
+	
+    <div class="panel-body">
 
-    <canvas id="myCanvas"></canvas>
-    <a href="/">Retour</a>
+        <input type="text" name="reponse" class="form-control" id="reponse" required>
+		<a class="btn btn-primary" href="/guess">Changer</a>
+		<input id="valider" class="btn btn-primary" type="button" value="Valider" onclick="verify();" />
+    </div>
+</div>
 
  
 <% include foot %>

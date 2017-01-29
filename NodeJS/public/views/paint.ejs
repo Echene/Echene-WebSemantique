@@ -1,15 +1,16 @@
 <% var title = 'Pictionnary - Dessiner' %>
 <% include head %>
+
     <script>  
   
-
-        var sizes=[8,20,44,90];  
-
-        var size, color;  
-
-        var x0, y0;  
-
-        var drawingCommands = [];  
+    // les quatre tailles de pinceau possible.
+    var sizes=[8,20,44,90];
+    // la taille et la couleur du pinceau
+    var size, color;
+    // la dernière position du stylo
+    var x0, y0;
+    // le tableau de commandes de dessin à envoyer au serveur lors de la validation du dessin
+    var drawingCommands = [];
   
         var setColor = function() 
 		{  
@@ -115,20 +116,21 @@
             };  
         };  
     </script>  
-</head>  
-<body>
-<canvas id="myCanvas"></canvas>  
 
-<form name="tools" action="/paint" method="post">  
+<canvas style=" border:2px solid #000000;" id="myCanvas"></canvas>
 
-	<input type="range" id="taille" min="0" max="3" step="1" value="0" width:100px/>
+<form name="tools" action="/paint" method="post" style="width: 400px">  
+
+	<input type="range" id="taille" min="0" max="3" step="1" value="0" width="100px"/>
 	<input type="color" id="couleur"/>
   
-    <input id="restart" type="button" value="Effacer"/>  
-    <input type="hidden" id="drawingCommands" name="drawingCommands"/>  
+    <input class="btn btn-primary" id="restart" type="button" value="Effacer"/>  
+    <input type="hidden" id="drawingCommands" name="drawingCommands"/> 
+	
+	<input type="text" name="reponse" class="form-control" id="reponse" required>
 
     <input type="hidden" id="picture" name="picture"/>  
-    <input id="validate" type="submit" value="Valider"/>  
+    <input class="btn btn-primary" id="validate" type="submit" value="Valider"/>  
 </form>  
  
 <% include foot %>

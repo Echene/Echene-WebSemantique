@@ -5,33 +5,23 @@
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
             <div class="panel-body">
-                <h1><span class="color:<%= color %>"><%= prenom %> <%= nom %></span></h1>
+                <h1><span class="color:<%= session.color%>"><%= session.prenom%> <%= session.nom%></span></h1>
 
                 <div class="row">
+				
                     <div class="col-md-4">
-                        <img src="/avatars/Avatar.png" alt="Avatar <%= prenom %> <%= nom %>" class="img-thumbnail" width="300" />
-                        
+                        <img src="<%=session.avatar%>" class="img-thumbnail" alt="avatar">
                     </div>
+					
                     <div class="col-md-8">
                         <ul class="profil">
-                            <li><b>Date de naissance :</b> <%= birthdate %></li>
-                            <li><b>Numéro de téléphone :</b> <%= tel %></li>
-                            <li><b>Site web :</b> <%= website %></li>
-                            <li><b>Sexe :</b> <%= sexe %></li>
-                            <li><b>Couleur favorite : </b> <%= color %></li>
+                            <li><b>Date de naissance :</b> 		<%= session.birthdate%>	</li>
+                            <li><b>Numéro de téléphone :</b> 	<%= session.tel%>		</li>
+                            <li><b>Site web :</b> 				<%= session.website%>	</li>
+                            <li><b>Sexe :</b> 					<%= session.sexe%>		</li>
                         </ul>
                     </div>
-                </div>
-            </div>
-			<div class="container">
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/paint">Dessiner</a></li>
-						<li><a href="/guess">Deviner</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/logout">Déconnexion</a></li>
-                    </ul>
+					
                 </div>
             </div>
         </div>

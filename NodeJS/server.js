@@ -29,13 +29,10 @@ app.use('/css', 	express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use('/js', 		express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', 		express.static(__dirname + '/node_modules/jquery/dist'));
 
-app.set('trust proxy', 1)
 app.use(session({
     name: 'sessionId',
     secret:'S3CR37'
 }));
-
-var sess;
 
 
 /* On affiche le formulaire d'enregistrement */
@@ -47,17 +44,17 @@ app.get('/', function(req, res){
 });
 
 app.get('/login', function(req, res){
-	sess = req.session;
+	var sess = req.session;
+	
 	if(!sess.email) {
-        res.render("login"), {
-			title : "Connexion"
-		};
+        res.render("login",{session:sess});
     } else {
 		res.redirect('/profile');
 	}	
 });
 
 app.post('/login', function (req, res) {
+	
     var email 	 = req.body.email;
     var password = req.body.password; //sha1(req.body.password);
 
@@ -65,32 +62,30 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/register', function (req, res) {
-		sess = req.session;
-    res.render('register', {
-        title : "Pictionnary - Inscription"
-    })
+	var	sess = req.session;
+    res.render('register',{session:sess})
 });
 
 app.post('/register', function(req, res) {
 
-    var email = req.body.email;
-    var password = req.body.password;
-    var prenom = req.body.prenom;
-    var nom = req.body.nom;
-    var tel = req.body.tel;
-    var website = req.body.website;
-	var ville = req.body.ville;
-	var taille = req.body.taille;
-    var sexe = req.body.sexe;
-    var birthdate = req.body.birthdate;
-    var color = req.body.couleur;
-    var avatar = req.body.profilepic;
+    var email 		= req.body.email;
+    var password 	= req.body.password;
+    var prenom 		= req.body.prenom;
+    var nom 		= req.body.nom;
+    var tel 		= req.body.tel;
+    var website 	= req.body.website;
+	var ville 		= req.body.ville;
+	var taille 		= req.body.taille;
+    var sexe 		= req.body.sexe;
+    var birthdate 	= req.body.birthdate;
+    var color 		= req.body.couleur;
+    var avatar 		= req.body.profilepic;
 
     var connection = mysql.createConnection({host:'localhost',user:'root',password:'',database:'pictionnary'});
 
     connection.connect();
 
-    connection.query("INSERT INTO users(email, password, nom, prenom, tel, website, sexe, birthdate, ville, taille, couleur, profilepic) VALUES ('" + email + "', '" + password + "', '" + nom + "', '" + prenom + "', '" + tel + "', '" + website + "', 'H', '" + birthdate + "', '" + ville + "', '" + taille + "', '" + color + "', '" + avatar + "')", function(err, rows) {
+    connection.query("INSERT INTO users(email, password, nom, prenom, tel, website, sexe, birthdate, ville, taille, couleur, profilepic) VALUES ('" + email + "', '" + password + "', '" + nom + "', '" + prenom + "', '" + tel + "', '" + website + "', '" + sexe + "', '" + birthdate + "', '" + ville + "', '" + taille + "', '" + color + "', '" + avatar + "')", function(err, rows) {
         if (err)
         { 
             console.log(err);
@@ -108,7 +103,7 @@ app.get('/logout',function(req,res){
 	  if(err) {
 		console.log(err);
 	  } else {
-		res.redirect('/');
+		res.redirect('/login');
 	  }
 	});
 });
@@ -117,36 +112,13 @@ app.get('/logout',function(req,res){
 app.get('/profile', function (req, res) {
 	
     // Récupération de la session
-	sess = req.session;
+	var sess = req.session;
+	
     // Si pas de session, on redirige vers la page de connexion
     if(!sess.email) {
-        res.redirect("login");
+        res.redirect("/login");
     } else {
-		var mysql 		= require('mysql');
-		var connection = mysql.createConnection({host:'localhost',user:'root',password:'',database:'pictionnary'});
-		connection.connect();
-		console.log(sess.email);
-		connection.query("SELECT * FROM users WHERE email = '" + sess.email + "'", function (err, result) {
-			if(!err) {
-				// Récupère les informations de la requête SQL
-				for (var i = 0; i < result.length; i++) {
-					res.render("profile", {
-						title 		  : "Pictionnary - Profil",
-						nom 		  : result[i].nom,
-						prenom 	  	  : result[i].prenom,
-						tel 		  : result[i].tel,
-						website 	  : result[i].website,
-						sexe 		  : result[i].sexe,
-						birthdate 	  : result[i].birthdate,
-						age 		  : result[i].age,
-						color 		  : result[i].couleur,
-						avatar 		  : result[i].avatar
-					}); 
-				}
-			} else {
-				console.log(err);
-			}
-		});
+		res.render("profile",{session:sess});
 	}
 }); 
 
@@ -185,45 +157,56 @@ app.get('/editProfile', function (req, res) {
 	}
 }); 
 
-app.get('/paint', function(req, res)
-{
+app.get('/paint', function(req, res) {
+	
+	var sess = req.session;
+	
 	if(!sess.email) {
         res.redirect("/login");
 	} else {
-		res.render('paint');
+		res.render('paint',{session:sess});
 	}
 
 });
 
-app.post('/paint',function(req, res)
-{
-	sess = req.session;
+app.post('/paint',function(req, res) {
+	
+	var sess = req.session;
 	
 	if(!sess.email) {
         res.redirect("/login");
     } else {
-		var draw 		= new Object();
-		draw.email 		= sess.email;
-		draw.commandes 	= req.body.drawingCommands;
-		draw.images 	= req.body.picture;
+		var commandes 	= req.body.drawingCommands;
+		var img 		= req.body.picture;
+		var reponse		= req.body.reponse;
+	
+		var connection = mysql.createConnection({host: 'localhost', user: 'root', password: '', database: 'pictionnary'});
+		connection.connect();
 
-		sendDrawing(draw);
-		res.redirect("/paint");
+		connection.query("INSERT INTO drawings (email, commands, images, reponse) VALUES('" + sess.email + "', '" + commandes + "', '"+img + "', '" + reponse + "')", function(err,fields)
+		{
+			if(err)
+			{ 
+				console.log(err);
+			}
+		});
+		
+		connection.end();
+		
+		res.redirect("/profile");
 	}
 
 });
 
-app.get('/guess', function(req, res)
-{
-    var query  = url.parse(req.url,true).query;
+app.get('/guess', function(req, res) {
 	
-	sess = req.session;
+	var sess = req.session;
 	
 	var connection = mysql.createConnection({host: 'localhost',user: 'root', password: '', database: 'pictionnary'});
 
     connection.connect();
 	
-    connection.query("SELECT commandes FROM drawings WHERE email = '" + sess.email + "' AND id = '" + query['drawid'] + "';", function(err, rows)
+    connection.query("SELECT commands, reponse FROM drawings ORDER BY RAND() LIMIT 1;", function(err, result)
         {
             if (err)
             { 
@@ -231,14 +214,10 @@ app.get('/guess', function(req, res)
             } 
             else
             {
-                res.render('guess', { commandes : rows[0].commandes });
+                res.render('guess', {session:sess, commandes : result[0].commands, reponse : result[0].reponse});
             }
         });
 })
-
-app.use(function (req, res) { // Répond enfin
-    res.send('Hello world!');
-});
 
 logger.info('server start');
 app.listen(8080);
@@ -249,62 +228,37 @@ function checkUser(email , password, res, req) {
 
     connection.connect();
 
-    connection.query("SELECT * FROM users WHERE email = '" + email + "' AND password = '" + password + "'", function (err, result) {
+    connection.query("SELECT *, CONVERT(profilepic USING utf8) as avatar, DATE_FORMAT(birthdate, \"%d-%m-%Y\") AS 'birthdate2' FROM users", function (err, result) {
         if(!err) {
-            if (result.length) { // Si on trouve un résultat
+            if (result.length) { // Pour chaque user
 				for (var i = 0; i < result.length; i++) {
-					var idUser 	= result[i].id;
-					var email 	= result[i].email;
+					if(email == result[i].email && password == result[i].password){
 
-					sess 		= req.session;
-					sess.email 	= req.body.email;
-					sess.idUser = result[i].id;
-					// Redirection vers le profil
-					res.redirect('/profile');
+						sess 			= req.session;
+						sess.email 		= email;
+						sess.nom		= result[i].nom;
+						sess.prenom 	= result[i].prenom;
+						sess.tel 		= result[i].tel;
+						sess.website 	= result[i].website;
+						sess.sexe 		= result[i].sexe;
+						sess.birthdate 	= result[i].birthdate2;
+						sess.age 		= result[i].age;
+						sess.color 		= result[i].couleur;
+						sess.avatar 	= result[i].avatar;
+						
+						// Redirection vers le profil
+						res.redirect('/profile');
+					}
 				}
             } else {
-
-				//Redicrection vers l'inscription
-                res.redirect('/register');
+				//Redicrection vers la page de login
+                res.render('login');
 			}
         } else {
+			res.render('login');
             logger.error(err);
 		}
     });
-
-    connection.end();
-}
-
-function sendDrawing(draw){
-
-    var values = {email : draw.email, commandes : draw.commandes, images : draw.images};
-	
-	var connection = mysql.createConnection({host: 'localhost', user: 'root', password: '', database: 'pictionnary'});
-    connection.connect();
-	
-    connection.query("INSERT INTO drawings (email, commandes, images) VALUE ?", values, function(err, rows) {
-        if (err)
-        { 
-            console.log(err);
-        }
-    });
-	
-	connection.end();
-}
-
-function insertUser(info, res) {
-
-    var connection = mysql.createConnection({host: 'localhost', user: 'root', password: '', database: 'pictionnary'});
-    connection.connect();
-
-    connection.query("INSERT INTO users VALUES ('" + info.email + "', '" + info.password + "', '" + info.nom + "', '" + info.prenom + "', '" + info.tel + "', '" + info.website + "', '" + info.sexe + "', '" + info.birthdate + "', '" + info.ville + "', '" + info.taille + "', '" + info.couleur + "', '" + info.profilepic + "');", function (err, rows) {
-        if(!err) {
-            res.redirect('/profile');
-        }
-        else
-            res.redirect('/register');
-		}
-	);
 
     connection.end();
 }
